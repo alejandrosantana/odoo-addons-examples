@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+		<!-- FORMS -->
+<!-- 		This view inherits from original res.partner view: base.view_partner_form -->
+<!-- 		Shows how to use xpath to select an existing field -->
+<!-- 		in order to use its position as a reference for adding new fields. -->
+        <record id="view_partner_form_training" model="ir.ui.view">
+            <field name="name">res.partner.form.training</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field eval="1" name="priority"/>
+            <field name="arch" type="xml">
+                <page string='Internal Notes' position="before">
+                	<page string="Training" attrs="{'invisible': [('is_company','=',True)]}">
+                        <group>
+                            <field name="trainer"/>
+                            <field name="trainee"/>
+                        </group>
+                    </page>
+                </page>
+<!--                 Otra manera de localizar el elemento de referencia es usar expresiones xpath -->
+<!--                 <xpath expr="//sheet/notebook/page[@string='Internal Notes']" position="before"> -->
+<!--                 	<page string="Training" attrs="{'invisible': [('is_company','=',True)]}"> -->
+<!--                         <group> -->
+<!--                             <field name="trainer"/> -->
+<!--                             <field name="trainee"/> -->
+<!--                         </group> -->
+<!--                     </page> -->
+<!--                 </xpath> -->
+                
+            </field>
+        </record>
+    
+<!--        Here we inherit and extend a filter to be used in the search bar -->
+<!-- 		for our model. -->
+		<record id="view_res_partner_filter_training" model="ir.ui.view">
+		     <field name="name">res.partner.select</field>
+		     <field name="model">res.partner</field>
+		     <field name="inherit_id" ref="base.view_res_partner_filter"/>
+		     <field name="arch" type="xml">
+		     	<filter name="supplier" position="after">            		
+		            <separator/>
+		            <filter string="Trainees" name="trainee" domain="[('trainee','=',1)]"  icon="terp-personal+" help="Trainees Partners"/>
+		            <filter string="Trainers" name="trainer" domain="[('trainer','=',1)]"  icon="terp-personal+" help="Trainers Partners"/>
+		     	</filter>
+		     </field>
+		 </record>
+    
+    	
+		<!-- ACTIONS -->
+<!-- 		Actions are used to "load" views and can pass them several arguments -->
+<!-- 		through context. -->
+        <record id="action_partner_trainer_form" model="ir.actions.act_window">
+            <field name="name">Trainers</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+<!--             This limits the data to those records that are not companies -->
+            <field name="domain">[('is_company','=',0)]</field>
+            <field name="view_mode">kanban,tree,form</field>
+<!--             This filters the avalaible data (beware the domain) to -->
+<!--             show only those people who are trainers. -->
+            <field name="context">{'default_trainer':1, 'search_default_trainer':1}</field>
+            <field name="filter" eval="True"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a trainer in your address book.
+              </p><p>
+                OpenERP helps you easily track all activities related to
+                a trainer and her related courses.
+              </p>
+            </field>
+        </record>
+        
+        <record id="action_partner_trainee_form" model="ir.actions.act_window">
+            <field name="name">Trainers</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+<!--             This limits the data to those records that are not companies -->
+            <field name="domain">[('is_company','=',0)]</field>
+            <field name="view_mode">kanban,tree,form</field>
+<!--             This filters the avalaible data (beware the domain) to -->
+<!--             show only those people who are trainees. -->
+            <field name="context">{'default_trainee':1, 'search_default_trainee':1}</field>
+            <field name="filter" eval="True"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a trainee in your address book.
+              </p><p>
+                OpenERP helps you easily track all activities related to
+                a trainee and her related courses.
+              </p>
+            </field>
+        </record>
+        
+        
+    	<!-- MENUS -->
+<!--     	This menues are linked to actions that filter the model to certain -->
+<!--     	caracteristics. -->
+    	<!-- Trainers menu -->
+        <menuitem id="menu_training_trainers"
+        		  parent="menu_training"
+        		  name="Trainers"
+        		  action="training_base.action_partner_trainer_form"
+        		  sequence="30"
+				  groups="group_training_trainer,group_training_manager"/>
+		<!-- Trainees menu -->
+        <menuitem id="menu_training_trainees"
+				  parent="menu_training" 
+				  name="Trainees" 
+        		  action="training_base.action_partner_trainee_form"
+				  sequence="40" 
+				  groups="group_training_trainee,group_training_trainer,group_training_manager"/>
+        
+    </data>
+</openerp>

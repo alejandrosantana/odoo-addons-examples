@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+        <!-- Top menu item -->
+        <menuitem id="menu_base_training"
+        		  name="Training"
+            	  groups="training_base.group_training_manager"
+            	  sequence="20"
+            	  icon="terp-document-new"/>
+
+        <!-- TRAINING MENU -->
+        <menuitem id="menu_training" 
+        		  parent="menu_base_training" 
+        		  name="Training" 
+        		  sequence="1" />
+		
+    	
+    </data>
+</openerp>
